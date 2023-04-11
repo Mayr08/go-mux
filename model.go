@@ -64,3 +64,24 @@ func getProducts(db *sql.DB, start, count int) ([]product, error) {
 
 	return products, nil
 }
+
+func getProductsByName(db *sql.DB, searchTerm string) ([]product, error) {
+	rows, err := db.Query("SELECT id, name, price FROM products WHERE name ILIKE '%' || $1 || '%'", searchTerm)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+	products := []product{}
+
+	for rows.Next() {
+		var product product
+		if err := rows.Scan(&product.ID, &product.Name, &product.Price); err != nil {
+			return nil, err
+		}
+		products = append(products, product)
+	}
+
+	return products, nil
+}

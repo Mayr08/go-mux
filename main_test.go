@@ -187,3 +187,28 @@ func TestDeleteProduct(t *testing.T) {
 	response = executeRequest(req)
 	checkResponseCode(t, http.StatusNotFound, response.Code)
 }
+
+func TestDB(t *testing.T) {
+	clearTable()
+
+	req, _ := http.NewRequest("GET", "/ping", nil)
+	response := executeRequest(req)
+	checkResponseCode(t, http.StatusOK, response.Code)
+}
+
+func TestGetProductsByName(t *testing.T) {
+	clearTable()
+	addProducts(5)
+
+	req, _ := http.NewRequest("GET", "/products/search?search=Product 1", nil)
+	response := executeRequest(req)
+	checkResponseCode(t, http.StatusOK, response.Code)
+
+	var product []product
+	if err := json.Unmarshal(response.Body.Bytes(), &product); err != nil {
+		t.Error("Error parsing body!")
+	}
+	if len(product) != 1 {
+		log.Fatalf("Error! 1 product expected, but only received %d", len(product))
+	}
+}
