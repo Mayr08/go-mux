@@ -200,7 +200,7 @@ func TestGetProductsByName(t *testing.T) {
 	clearTable()
 	addProducts(5)
 
-	req, _ := http.NewRequest("GET", "/products/search?search=Wrong", nil)
+	req, _ := http.NewRequest("GET", "/products/search?search=Product 1", nil)
 	response := executeRequest(req)
 	checkResponseCode(t, http.StatusOK, response.Code)
 
